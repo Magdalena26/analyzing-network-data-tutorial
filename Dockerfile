@@ -29,7 +29,14 @@ RUN useradd -ms /bin/bash jupyter
 
 USER jupyter
 
-ADD analyzing_network_data_tutorial.ipynb /home/code/analyzing_network_data_tutorial.ipynb
+ADD analyzing_network_data_tutorial.ipynb quakers_edgelist.csv quakers_nodelist.csv /home/code/
+
+USER root
+
+RUN chown -R jupyter:jupyter /home/code
+RUN chmod 755 /home/code
+
+USER jupyter
 
 # Set the container working directory to the user home folder
 WORKDIR /home/code
