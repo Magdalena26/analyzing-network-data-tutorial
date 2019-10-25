@@ -1,0 +1,201 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 500px;
+            height: 500px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 500px;
+            height: 500px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"id": "Joseph Wyeth", "label": "Joseph Wyeth", "shape": "dot", "title": "Joseph Wyeth"}, {"id": "Thomas Ellwood", "label": "Thomas Ellwood", "shape": "dot", "title": "Thomas Ellwood"}, {"id": "Alexander Skene of Newtyle", "label": "Alexander Skene of Newtyle", "shape": "dot", "title": "Alexander Skene of Newtyle"}, {"id": "Lilias Skene", "label": "Lilias Skene", "shape": "dot", "title": "Lilias Skene"}, {"id": "James Logan", "label": "James Logan", "shape": "dot", "title": "James Logan"}, {"id": "Peter Collinson", "label": "Peter Collinson", "shape": "dot", "title": "Peter Collinson"}, {"id": "John Bartram", "label": "John Bartram", "shape": "dot", "title": "John Bartram"}, {"id": "William Penn", "label": "William Penn", "shape": "dot", "title": "William Penn"}, {"id": "David Lloyd", "label": "David Lloyd", "shape": "dot", "title": "David Lloyd"}, {"id": "Dorcas Erbery", "label": "Dorcas Erbery", "shape": "dot", "title": "Dorcas Erbery"}, {"id": "James Nayler", "label": "James Nayler", "shape": "dot", "title": "James Nayler"}, {"id": "William Mucklow", "label": "William Mucklow", "shape": "dot", "title": "William Mucklow"}, {"id": "George Fox", "label": "George Fox", "shape": "dot", "title": "George Fox"}, {"id": "Thomas Salthouse", "label": "Thomas Salthouse", "shape": "dot", "title": "Thomas Salthouse"}, {"id": "Margaret Fell", "label": "Margaret Fell", "shape": "dot", "title": "Margaret Fell"}, {"id": "William Dewsbury", "label": "William Dewsbury", "shape": "dot", "title": "William Dewsbury"}, {"id": "Edward Burrough", "label": "Edward Burrough", "shape": "dot", "title": "Edward Burrough"}, {"id": "John Crook", "label": "John Crook", "shape": "dot", "title": "John Crook"}, {"id": "John Audland", "label": "John Audland", "shape": "dot", "title": "John Audland"}, {"id": "John Camm", "label": "John Camm", "shape": "dot", "title": "John Camm"}, {"id": "Francis Howgill", "label": "Francis Howgill", "shape": "dot", "title": "Francis Howgill"}, {"id": "Edward Pyott", "label": "Edward Pyott", "shape": "dot", "title": "Edward Pyott"}, {"id": "Charles Marshall", "label": "Charles Marshall", "shape": "dot", "title": "Charles Marshall"}, {"id": "Anne Camm", "label": "Anne Camm", "shape": "dot", "title": "Anne Camm"}, {"id": "Richard Claridge", "label": "Richard Claridge", "shape": "dot", "title": "Richard Claridge"}, {"id": "Joseph Besse", "label": "Joseph Besse", "shape": "dot", "title": "Joseph Besse"}, {"id": "William Bradford", "label": "William Bradford", "shape": "dot", "title": "William Bradford"}, {"id": "George Keith", "label": "George Keith", "shape": "dot", "title": "George Keith"}, {"id": "Tace Sowle", "label": "Tace Sowle", "shape": "dot", "title": "Tace Sowle"}, {"id": "Fettiplace Bellers", "label": "Fettiplace Bellers", "shape": "dot", "title": "Fettiplace Bellers"}, {"id": "John Bellers", "label": "John Bellers", "shape": "dot", "title": "John Bellers"}, {"id": "Isabel Yeamans", "label": "Isabel Yeamans", "shape": "dot", "title": "Isabel Yeamans"}, {"id": "George Fox the younger", "label": "George Fox the younger", "shape": "dot", "title": "George Fox the younger"}, {"id": "Ellis Hookes", "label": "Ellis Hookes", "shape": "dot", "title": "Ellis Hookes"}, {"id": "William Mead", "label": "William Mead", "shape": "dot", "title": "William Mead"}, {"id": "Elizabeth Hooten", "label": "Elizabeth Hooten", "shape": "dot", "title": "Elizabeth Hooten"}, {"id": "George Whitehead", "label": "George Whitehead", "shape": "dot", "title": "George Whitehead"}, {"id": "Benjamin Furly", "label": "Benjamin Furly", "shape": "dot", "title": "Benjamin Furly"}, {"id": "John Wilkinson", "label": "John Wilkinson", "shape": "dot", "title": "John Wilkinson"}, {"id": "William Coddington", "label": "William Coddington", "shape": "dot", "title": "William Coddington"}, {"id": "John Stubbs", "label": "John Stubbs", "shape": "dot", "title": "John Stubbs"}, {"id": "John Perrot", "label": "John Perrot", "shape": "dot", "title": "John Perrot"}, {"id": "Leonard Fell", "label": "Leonard Fell", "shape": "dot", "title": "Leonard Fell"}, {"id": "William Caton", "label": "William Caton", "shape": "dot", "title": "William Caton"}, {"id": "Samuel Fisher", "label": "Samuel Fisher", "shape": "dot", "title": "Samuel Fisher"}, {"id": "John Burnyeat", "label": "John Burnyeat", "shape": "dot", "title": "John Burnyeat"}, {"id": "Thomas Camm", "label": "Thomas Camm", "shape": "dot", "title": "Thomas Camm"}, {"id": "John Story", "label": "John Story", "shape": "dot", "title": "John Story"}, {"id": "Katharine Evans", "label": "Katharine Evans", "shape": "dot", "title": "Katharine Evans"}, {"id": "Sarah Cheevers", "label": "Sarah Cheevers", "shape": "dot", "title": "Sarah Cheevers"}, {"id": "Lydia Lancaster", "label": "Lydia Lancaster", "shape": "dot", "title": "Lydia Lancaster"}, {"id": "Grace Chamber", "label": "Grace Chamber", "shape": "dot", "title": "Grace Chamber"}, {"id": "Samuel Clarridge", "label": "Samuel Clarridge", "shape": "dot", "title": "Samuel Clarridge"}, {"id": "Anthony Sharp", "label": "Anthony Sharp", "shape": "dot", "title": "Anthony Sharp"}, {"id": "James Claypoole", "label": "James Claypoole", "shape": "dot", "title": "James Claypoole"}, {"id": "Thomas Lower", "label": "Thomas Lower", "shape": "dot", "title": "Thomas Lower"}, {"id": "Gervase Benson", "label": "Gervase Benson", "shape": "dot", "title": "Gervase Benson"}, {"id": "Anthony Pearson", "label": "Anthony Pearson", "shape": "dot", "title": "Anthony Pearson"}, {"id": "Stephen Crisp", "label": "Stephen Crisp", "shape": "dot", "title": "Stephen Crisp"}, {"id": "James Parnel", "label": "James Parnel", "shape": "dot", "title": "James Parnel"}, {"id": "Thomas Holme", "label": "Thomas Holme", "shape": "dot", "title": "Thomas Holme"}, {"id": "William Gibson", "label": "William Gibson", "shape": "dot", "title": "William Gibson"}, {"id": "Elizabeth Leavens", "label": "Elizabeth Leavens", "shape": "dot", "title": "Elizabeth Leavens"}, {"id": "John Freame", "label": "John Freame", "shape": "dot", "title": "John Freame"}, {"id": "David Barclay", "label": "David Barclay", "shape": "dot", "title": "David Barclay"}, {"id": "John Swinton", "label": "John Swinton", "shape": "dot", "title": "John Swinton"}, {"id": "David Barclay of Ury", "label": "David Barclay of Ury", "shape": "dot", "title": "David Barclay of Ury"}, {"id": "Henry Pickworth", "label": "Henry Pickworth", "shape": "dot", "title": "Henry Pickworth"}, {"id": "Francis Bugg", "label": "Francis Bugg", "shape": "dot", "title": "Francis Bugg"}, {"id": "Gilbert Latey", "label": "Gilbert Latey", "shape": "dot", "title": "Gilbert Latey"}, {"id": "Samuel Bownas", "label": "Samuel Bownas", "shape": "dot", "title": "Samuel Bownas"}, {"id": "Martha Simmonds", "label": "Martha Simmonds", "shape": "dot", "title": "Martha Simmonds"}, {"id": "Hannah Stranger", "label": "Hannah Stranger", "shape": "dot", "title": "Hannah Stranger"}, {"id": "Richard Farnworth", "label": "Richard Farnworth", "shape": "dot", "title": "Richard Farnworth"}, {"id": "Robert Rich", "label": "Robert Rich", "shape": "dot", "title": "Robert Rich"}, {"id": "Rebecca Travers", "label": "Rebecca Travers", "shape": "dot", "title": "Rebecca Travers"}, {"id": "William Tomlinson", "label": "William Tomlinson", "shape": "dot", "title": "William Tomlinson"}, {"id": "William Rogers", "label": "William Rogers", "shape": "dot", "title": "William Rogers"}, {"id": "Richard Hubberthorne", "label": "Richard Hubberthorne", "shape": "dot", "title": "Richard Hubberthorne"}, {"id": "Alexander Parker", "label": "Alexander Parker", "shape": "dot", "title": "Alexander Parker"}, {"id": "John Whitehead", "label": "John Whitehead", "shape": "dot", "title": "John Whitehead"}, {"id": "Daniel Quare", "label": "Daniel Quare", "shape": "dot", "title": "Daniel Quare"}, {"id": "William Crouch", "label": "William Crouch", "shape": "dot", "title": "William Crouch"}, {"id": "Franciscus Mercurius van Helmont", "label": "Franciscus Mercurius van Helmont", "shape": "dot", "title": "Franciscus Mercurius van Helmont"}, {"id": "Robert Barclay", "label": "Robert Barclay", "shape": "dot", "title": "Robert Barclay"}, {"id": "Silvanus Bevan", "label": "Silvanus Bevan", "shape": "dot", "title": "Silvanus Bevan"}, {"id": "John Whiting", "label": "John Whiting", "shape": "dot", "title": "John Whiting"}, {"id": "Christopher Taylor", "label": "Christopher Taylor", "shape": "dot", "title": "Christopher Taylor"}, {"id": "Thomas Taylor", "label": "Thomas Taylor", "shape": "dot", "title": "Thomas Taylor"}, {"id": "Thomas Lawson", "label": "Thomas Lawson", "shape": "dot", "title": "Thomas Lawson"}, {"id": "Richard Vickris", "label": "Richard Vickris", "shape": "dot", "title": "Richard Vickris"}, {"id": "George Bishop", "label": "George Bishop", "shape": "dot", "title": "George Bishop"}, {"id": "Jane Sowle", "label": "Jane Sowle", "shape": "dot", "title": "Jane Sowle"}, {"id": "Thomas Curtis", "label": "Thomas Curtis", "shape": "dot", "title": "Thomas Curtis"}, {"id": "Mary Penington", "label": "Mary Penington", "shape": "dot", "title": "Mary Penington"}, {"id": "William Simpson", "label": "William Simpson", "shape": "dot", "title": "William Simpson"}, {"id": "Alice Curwen", "label": "Alice Curwen", "shape": "dot", "title": "Alice Curwen"}, {"id": "Sir Charles Wager", "label": "Sir Charles Wager", "shape": "dot", "title": "Sir Charles Wager"}, {"id": "Solomon Eccles", "label": "Solomon Eccles", "shape": "dot", "title": "Solomon Eccles"}, {"id": "Thomas Aldam", "label": "Thomas Aldam", "shape": "dot", "title": "Thomas Aldam"}, {"id": "Lewis Morris", "label": "Lewis Morris", "shape": "dot", "title": "Lewis Morris"}, {"id": "Anne Conway Viscountess Conway and Killultagh", "label": "Anne Conway Viscountess Conway and Killultagh", "shape": "dot", "title": "Anne Conway Viscountess Conway and Killultagh"}, {"id": "William Ames", "label": "William Ames", "shape": "dot", "title": "William Ames"}, {"id": "Isaac Norris", "label": "Isaac Norris", "shape": "dot", "title": "Isaac Norris"}, {"id": "William Edmundson", "label": "William Edmundson", "shape": "dot", "title": "William Edmundson"}, {"id": "Mary Fisher", "label": "Mary Fisher", "shape": "dot", "title": "Mary Fisher"}, {"id": "Mary Prince", "label": "Mary Prince", "shape": "dot", "title": "Mary Prince"}, {"id": "Sarah Gibbons", "label": "Sarah Gibbons", "shape": "dot", "title": "Sarah Gibbons"}, {"id": "Dorothy Waugh", "label": "Dorothy Waugh", "shape": "dot", "title": "Dorothy Waugh"}, {"id": "Humphrey Norton", "label": "Humphrey Norton", "shape": "dot", "title": "Humphrey Norton"}, {"id": "John Rous", "label": "John Rous", "shape": "dot", "title": "John Rous"}, {"id": "Gideon Wanton", "label": "Gideon Wanton", "shape": "dot", "title": "Gideon Wanton"}, {"id": "John Wanton", "label": "John Wanton", "shape": "dot", "title": "John Wanton"}, {"id": "Edward Haistwell", "label": "Edward Haistwell", "shape": "dot", "title": "Edward Haistwell"}, {"id": "John ap John", "label": "John ap John", "shape": "dot", "title": "John ap John"}, {"id": "John Penington", "label": "John Penington", "shape": "dot", "title": "John Penington"}, {"id": "Humphrey Woolrich", "label": "Humphrey Woolrich", "shape": "dot", "title": "Humphrey Woolrich"}, {"id": "Mary Pennyman", "label": "Mary Pennyman", "shape": "dot", "title": "Mary Pennyman"}, {"id": "Thomas Story", "label": "Thomas Story", "shape": "dot", "title": "Thomas Story"}]);
+        edges = new vis.DataSet([{"from": "Joseph Wyeth", "to": "Thomas Ellwood"}, {"from": "Alexander Skene of Newtyle", "to": "Lilias Skene"}, {"from": "James Logan", "to": "Peter Collinson"}, {"from": "James Logan", "to": "John Bartram"}, {"from": "James Logan", "to": "William Penn"}, {"from": "James Logan", "to": "David Lloyd"}, {"from": "Dorcas Erbery", "to": "James Nayler"}, {"from": "William Mucklow", "to": "George Fox"}, {"from": "Thomas Salthouse", "to": "George Fox"}, {"from": "Thomas Salthouse", "to": "Margaret Fell"}, {"from": "William Dewsbury", "to": "Edward Burrough"}, {"from": "William Dewsbury", "to": "George Fox"}, {"from": "William Dewsbury", "to": "John Crook"}, {"from": "John Audland", "to": "John Camm"}, {"from": "John Audland", "to": "Francis Howgill"}, {"from": "John Audland", "to": "Edward Pyott"}, {"from": "John Audland", "to": "Charles Marshall"}, {"from": "John Audland", "to": "George Fox"}, {"from": "John Audland", "to": "Anne Camm"}, {"from": "Richard Claridge", "to": "Joseph Besse"}, {"from": "Richard Claridge", "to": "William Penn"}, {"from": "William Bradford", "to": "George Keith"}, {"from": "William Bradford", "to": "William Penn"}, {"from": "William Bradford", "to": "Tace Sowle"}, {"from": "Fettiplace Bellers", "to": "John Bellers"}, {"from": "Isabel Yeamans", "to": "William Penn"}, {"from": "George Fox the younger", "to": "Margaret Fell"}, {"from": "George Fox", "to": "George Keith"}, {"from": "George Fox", "to": "Francis Howgill"}, {"from": "George Fox", "to": "Ellis Hookes"}, {"from": "George Fox", "to": "William Mead"}, {"from": "George Fox", "to": "Elizabeth Hooten"}, {"from": "George Fox", "to": "Margaret Fell"}, {"from": "George Fox", "to": "John Crook"}, {"from": "George Fox", "to": "George Whitehead"}, {"from": "George Fox", "to": "Benjamin Furly"}, {"from": "George Fox", "to": "James Nayler"}, {"from": "George Fox", "to": "Edward Burrough"}, {"from": "George Fox", "to": "John Wilkinson"}, {"from": "George Fox", "to": "Thomas Ellwood"}, {"from": "George Fox", "to": "William Coddington"}, {"from": "George Fox", "to": "John Stubbs"}, {"from": "George Fox", "to": "John Perrot"}, {"from": "George Fox", "to": "Leonard Fell"}, {"from": "George Fox", "to": "William Penn"}, {"from": "John Stubbs", "to": "Benjamin Furly"}, {"from": "John Stubbs", "to": "William Caton"}, {"from": "John Stubbs", "to": "Samuel Fisher"}, {"from": "John Stubbs", "to": "John Burnyeat"}, {"from": "Anne Camm", "to": "Thomas Camm"}, {"from": "John Camm", "to": "Charles Marshall"}, {"from": "John Camm", "to": "Thomas Camm"}, {"from": "John Camm", "to": "Edward Pyott"}, {"from": "Thomas Camm", "to": "John Story"}, {"from": "Katharine Evans", "to": "Sarah Cheevers"}, {"from": "Lydia Lancaster", "to": "Grace Chamber"}, {"from": "Samuel Clarridge", "to": "Anthony Sharp"}, {"from": "Samuel Clarridge", "to": "James Claypoole"}, {"from": "Thomas Lower", "to": "Margaret Fell"}, {"from": "Gervase Benson", "to": "James Nayler"}, {"from": "Gervase Benson", "to": "Anthony Pearson"}, {"from": "Stephen Crisp", "to": "James Parnel"}, {"from": "Stephen Crisp", "to": "William Caton"}, {"from": "Stephen Crisp", "to": "Benjamin Furly"}, {"from": "James Claypoole", "to": "William Penn"}, {"from": "Thomas Holme", "to": "William Gibson"}, {"from": "Thomas Holme", "to": "Elizabeth Leavens"}, {"from": "John Freame", "to": "David Barclay"}, {"from": "John Swinton", "to": "David Barclay of Ury"}, {"from": "William Mead", "to": "Margaret Fell"}, {"from": "Henry Pickworth", "to": "Francis Bugg"}, {"from": "John Crook", "to": "John Perrot"}, {"from": "John Crook", "to": "Edward Burrough"}, {"from": "Gilbert Latey", "to": "Edward Burrough"}, {"from": "Gilbert Latey", "to": "George Whitehead"}, {"from": "Joseph Besse", "to": "Samuel Bownas"}, {"from": "James Nayler", "to": "Francis Howgill"}, {"from": "James Nayler", "to": "Martha Simmonds"}, {"from": "James Nayler", "to": "Hannah Stranger"}, {"from": "James Nayler", "to": "Margaret Fell"}, {"from": "James Nayler", "to": "Richard Farnworth"}, {"from": "James Nayler", "to": "George Whitehead"}, {"from": "James Nayler", "to": "John Perrot"}, {"from": "James Nayler", "to": "Robert Rich"}, {"from": "James Nayler", "to": "Anthony Pearson"}, {"from": "James Nayler", "to": "Thomas Ellwood"}, {"from": "James Nayler", "to": "Edward Burrough"}, {"from": "James Nayler", "to": "Rebecca Travers"}, {"from": "James Nayler", "to": "William Tomlinson"}, {"from": "George Whitehead", "to": "George Keith"}, {"from": "George Whitehead", "to": "William Rogers"}, {"from": "George Whitehead", "to": "Francis Bugg"}, {"from": "George Whitehead", "to": "Richard Hubberthorne"}, {"from": "George Whitehead", "to": "Alexander Parker"}, {"from": "George Whitehead", "to": "John Whitehead"}, {"from": "George Whitehead", "to": "Daniel Quare"}, {"from": "George Whitehead", "to": "William Penn"}, {"from": "George Whitehead", "to": "John Story"}, {"from": "George Whitehead", "to": "Rebecca Travers"}, {"from": "William Crouch", "to": "Francis Howgill"}, {"from": "William Crouch", "to": "Edward Burrough"}, {"from": "Benjamin Furly", "to": "George Keith"}, {"from": "Benjamin Furly", "to": "James Parnel"}, {"from": "Benjamin Furly", "to": "Franciscus Mercurius van Helmont"}, {"from": "Benjamin Furly", "to": "Robert Barclay"}, {"from": "Benjamin Furly", "to": "Alexander Parker"}, {"from": "Benjamin Furly", "to": "William Caton"}, {"from": "Benjamin Furly", "to": "William Penn"}, {"from": "Silvanus Bevan", "to": "Daniel Quare"}, {"from": "Robert Rich", "to": "William Tomlinson"}, {"from": "John Whiting", "to": "Christopher Taylor"}, {"from": "Christopher Taylor", "to": "Thomas Taylor"}, {"from": "Thomas Lawson", "to": "Margaret Fell"}, {"from": "Thomas Lawson", "to": "Alexander Parker"}, {"from": "Richard Farnworth", "to": "Francis Howgill"}, {"from": "Richard Farnworth", "to": "Richard Hubberthorne"}, {"from": "Richard Farnworth", "to": "John Perrot"}, {"from": "Richard Farnworth", "to": "Margaret Fell"}, {"from": "Richard Farnworth", "to": "Anthony Pearson"}, {"from": "Richard Vickris", "to": "George Bishop"}, {"from": "Robert Barclay", "to": "George Keith"}, {"from": "Robert Barclay", "to": "David Barclay of Ury"}, {"from": "Jane Sowle", "to": "Tace Sowle"}, {"from": "Tace Sowle", "to": "William Penn"}, {"from": "Margaret Fell", "to": "William Caton"}, {"from": "Margaret Fell", "to": "William Penn"}, {"from": "Margaret Fell", "to": "Alexander Parker"}, {"from": "Margaret Fell", "to": "Elizabeth Leavens"}, {"from": "Margaret Fell", "to": "Anthony Pearson"}, {"from": "Thomas Curtis", "to": "Anthony Sharp"}, {"from": "Thomas Curtis", "to": "Mary Penington"}, {"from": "Thomas Curtis", "to": "Thomas Ellwood"}, {"from": "Thomas Curtis", "to": "William Simpson"}, {"from": "Thomas Curtis", "to": "John Story"}, {"from": "Alice Curwen", "to": "Rebecca Travers"}, {"from": "Alexander Parker", "to": "John Wilkinson"}, {"from": "Alexander Parker", "to": "Sir Charles Wager"}, {"from": "John Wilkinson", "to": "Charles Marshall"}, {"from": "John Wilkinson", "to": "Solomon Eccles"}, {"from": "John Wilkinson", "to": "John Story"}, {"from": "Thomas Aldam", "to": "Anthony Pearson"}, {"from": "Sir Charles Wager", "to": "Lewis Morris"}, {"from": "George Keith", "to": "Anne Conway Viscountess Conway and Killultagh"}, {"from": "George Keith", "to": "Franciscus Mercurius van Helmont"}, {"from": "George Keith", "to": "William Penn"}, {"from": "Peter Collinson", "to": "John Bartram"}, {"from": "William Caton", "to": "William Ames"}, {"from": "Francis Howgill", "to": "Martha Simmonds"}, {"from": "Francis Howgill", "to": "Edward Burrough"}, {"from": "William Rogers", "to": "Thomas Ellwood"}, {"from": "Isaac Norris", "to": "William Penn"}, {"from": "Anthony Sharp", "to": "William Edmundson"}, {"from": "Mary Fisher", "to": "John Perrot"}, {"from": "Mary Fisher", "to": "Mary Prince"}, {"from": "Sarah Gibbons", "to": "Dorothy Waugh"}, {"from": "Humphrey Norton", "to": "John Rous"}, {"from": "Gideon Wanton", "to": "John Wanton"}, {"from": "Mary Prince", "to": "John Perrot"}, {"from": "Edward Haistwell", "to": "William Penn"}, {"from": "John ap John", "to": "John Burnyeat"}, {"from": "Solomon Eccles", "to": "John Story"}, {"from": "John Burnyeat", "to": "William Edmundson"}, {"from": "John Burnyeat", "to": "William Penn"}, {"from": "Edward Burrough", "to": "John Perrot"}, {"from": "Edward Burrough", "to": "Thomas Ellwood"}, {"from": "Rebecca Travers", "to": "William Penn"}, {"from": "John Penington", "to": "Mary Penington"}, {"from": "Mary Penington", "to": "William Penn"}, {"from": "Mary Penington", "to": "Thomas Ellwood"}, {"from": "Humphrey Woolrich", "to": "Mary Pennyman"}, {"from": "William Penn", "to": "Thomas Story"}, {"from": "William Penn", "to": "David Lloyd"}, {"from": "Martha Simmonds", "to": "Hannah Stranger"}, {"from": "John Story", "to": "Thomas Ellwood"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
