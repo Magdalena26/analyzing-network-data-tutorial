@@ -34,7 +34,7 @@ RUN wget http://snap.stanford.edu/snappy/release/snap-stanford-5.0.0-5.0-ubuntu1
 
 RUN tar zxvf snap-stanford-5.0.0-5.0-ubuntu18.04.2-x64-py3.6.tar.gz
 
-run cd snap-stanford-5.0.0-5.0-ubuntu18.04.2-x64-py3.6; python3 setup.py install
+RUN cd snap-stanford-5.0.0-5.0-ubuntu18.04.2-x64-py3.6; python3 setup.py install
 
 
 USER jupyter
