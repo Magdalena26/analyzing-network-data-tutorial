@@ -8,7 +8,7 @@ RUN pip3 install jupyter
 RUN apt-get -qq update; \
     apt-get install -qqy \
         graphviz ruby-graphviz \
-        python-pydot python3-pydot python-pygraphviz python3-pygraphviz; \
+        python-pydot python3-pydot python-pygraphviz python3-pygraphviz wget; \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install pyvis
@@ -28,6 +28,14 @@ RUN pip3 install seaborn
 RUN pip3 install snap-stanford
 
 RUN useradd -ms /bin/bash jupyter
+
+
+RUN wget http://snap.stanford.edu/snappy/release/snap-stanford-5.0.0-5.0-ubuntu18.04.2-x64-py3.6.tar.gz
+
+RUN tar zxvf snap-stanford-5.0.0-5.0-ubuntu18.04.2-x64-py3.6.tar.gz
+
+run cd snap-stanford-5.0.0-5.0-ubuntu18.04.2-x64-py3.6; python3 setup.py install
+
 
 USER jupyter
 
